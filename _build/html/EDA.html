@@ -1,0 +1,920 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Target y Exploración de Datos &#8212; Mini Proyecto 1 - Predicción de Default en Préstamos</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b76e3c8a" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'EDA';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Modelado con scikit-learn" href="scikit-learn.html" />
+    <link rel="prev" title="Predicción de Default en Préstamos de Lending Club" href="intro.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Mini Proyecto 1 - Predicción de Default en Préstamos</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Predicción de Default en Préstamos de Lending Club
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#"><strong>Target y Exploración de Datos</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="scikit-learn.html"><strong>Modelado con scikit-learn</strong></a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FEDA.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/EDA.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Target y Exploración de Datos</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preprocesamiento-de-datos"><strong>Preprocesamiento de Datos</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creacion-variable-default"><strong>Creación Variable ‘Default’</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#eleccion-de-variables"><strong>Elección de variables</strong></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-exploratorio-de-datos"><strong>Analisis Exploratorio de Datos</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#distribucion-de-la-variable-default"><strong>Distribución de la Variable Default</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#valores-faltantes-y-tipos-de-datos"><strong>Valores Faltantes y Tipos de Datos</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#histogramas-variables-numericas"><strong>Histogramas Variables Númericas</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#variables-categoricas"><strong>Variables Categoricas</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#matriz-de-correlacion"><strong>Matriz de Correlación</strong></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="target-y-exploracion-de-datos">
+<h1><strong>Target y Exploración de Datos</strong><a class="headerlink" href="#target-y-exploracion-de-datos" title="Link to this heading">#</a></h1>
+<section id="preprocesamiento-de-datos">
+<h2><strong>Preprocesamiento de Datos</strong><a class="headerlink" href="#preprocesamiento-de-datos" title="Link to this heading">#</a></h2>
+<p>En primer lugar, leemos la base de datos desde el csv. Debido al tamaño del archivo se optó por acceder por fragmentos al archivo, con el objetivo de optimizar el uso de memoria.</p>
+<section id="creacion-variable-default">
+<h3><strong>Creación Variable ‘Default’</strong><a class="headerlink" href="#creacion-variable-default" title="Link to this heading">#</a></h3>
+<p>Se creó la variable binaria ‘default’ en base a la variable original ‘loan_status’.  Se tiene ‘Fully Paid’ = 0 y ‘Charge Off’/’Default’ = 1. Luego se elimina aquellos registros en los que ‘default’ seria nula.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Definir categorías</span>
+<span class="n">good_status</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Fully Paid&quot;</span><span class="p">]</span>
+<span class="n">bad_status</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Charged Off&quot;</span><span class="p">,</span> <span class="s2">&quot;Default&quot;</span><span class="p">]</span>
+
+<span class="c1"># Crear nueva variable sin reemplazar la original</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;loan_status&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">bad_status</span> <span class="k">else</span> <span class="p">(</span><span class="mi">0</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">good_status</span> <span class="k">else</span> <span class="kc">None</span><span class="p">))</span>
+
+<span class="c1"># Filtrar para conservar solo Fully Paid y Charged Off/Default</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">()]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># Verificar resultados</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;loan_status&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>loan_status
+Fully Paid     1076751
+Charged Off     268559
+Default             40
+Name: count, dtype: int64
+default
+0.0    1076751
+1.0     268599
+Name: count, dtype: int64
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(1345350, 152)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="eleccion-de-variables">
+<h3><strong>Elección de variables</strong><a class="headerlink" href="#eleccion-de-variables" title="Link to this heading">#</a></h3>
+<p>Para elegir las variables más relevantes para el modelado se utilizó varias estrategias con el fin de optimizar el proceso.</p>
+<ol class="arabic simple">
+<li><p>Eliminar aquellas variables con un porcentaje de valores nulos mayor al 50%. Justificado en el hecho de que no aportaría a los resultados.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">null_thresh</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">df</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">null_thresh</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✅ Después de eliminar nulos (&gt;50%):&quot;</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>✅ Después de eliminar nulos (&gt;50%): (1345350, 94)
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Eliminar variables con baja variabilidad. Es decir, aquellas donde más del 95% de las filas tiene el mismo valor.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">low_variance_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> 
+                     <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">(</span><span class="n">dropna</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="ow">or</span> 
+                        <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.95</span><span class="p">)]</span>
+<span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">low_variance_cols</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✅ Después de baja varianza:&quot;</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>✅ Después de baja varianza: (1345350, 100)
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Eliminar variables de Data Leakage (fuga de información)</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">leakage_cols</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;funded_amnt&#39;</span><span class="p">,</span><span class="s1">&#39;funded_amnt_inv&#39;</span><span class="p">,</span><span class="s1">&#39;total_pymnt&#39;</span><span class="p">,</span><span class="s1">&#39;total_pymnt_inv&#39;</span><span class="p">,</span><span class="s1">&#39;total_rec_prncp&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;total_rec_int&#39;</span><span class="p">,</span><span class="s1">&#39;recoveries&#39;</span><span class="p">,</span><span class="s1">&#39;collection_recovery_fee&#39;</span><span class="p">,</span><span class="s1">&#39;last_pymnt_d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;last_pymnt_amnt&#39;</span><span class="p">,</span><span class="s1">&#39;last_credit_pull_d&#39;</span><span class="p">,</span><span class="s1">&#39;last_fico_range_high&#39;</span><span class="p">,</span><span class="s1">&#39;last_fico_range_low&#39;</span>
+<span class="p">]</span>
+<span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">leakage_cols</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✅ Después de quitar leakage:&quot;</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>✅ Después de quitar leakage: (1345350, 67)
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Se eliminan las variables que contienen metadatos/identificadores que no aportan al analisis.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">id_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;zip_code&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">]</span>
+<span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">id_cols</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✅ Después de quitar IDs/metadatos:&quot;</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>✅ Después de quitar IDs/metadatos: (1345350, 64)
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>Se modificaron aquellas variables con colinealidad extrema (pares obvios). Para evitar información redundante,</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="s1">&#39;fico_range_high&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s1">&#39;fico_range_low&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;fico_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;fico_range_high&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;fico_range_low&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;fico_range_high&#39;</span><span class="p">,</span><span class="s1">&#39;fico_range_low&#39;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="s1">&#39;grade&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s1">&#39;sub_grade&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;grade&#39;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="s1">&#39;funded_amnt&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s1">&#39;loan_amnt&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;funded_amnt&#39;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✅ Después de manejar colinealidad:&quot;</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>✅ Después de manejar colinealidad: (1345350, 62)
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="6">
+<li><p>Eliminar texto libre difícil de procesar</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">text_cols</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;emp_title&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">]</span>
+<span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">text_cols</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✅ Después de quitar texto libre:&quot;</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>✅ Después de quitar texto libre: (1345350, 59)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✅ Dataset final shape:&quot;</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;📌 Columnas finales:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>✅ Dataset final shape: (1345350, 60)
+📌 Columnas finales:
+ [&#39;loan_amnt&#39;, &#39;term&#39;, &#39;int_rate&#39;, &#39;installment&#39;, &#39;sub_grade&#39;, &#39;emp_length&#39;, &#39;home_ownership&#39;, &#39;annual_inc&#39;, &#39;verification_status&#39;, &#39;issue_d&#39;, &#39;purpose&#39;, &#39;addr_state&#39;, &#39;dti&#39;, &#39;delinq_2yrs&#39;, &#39;inq_last_6mths&#39;, &#39;open_acc&#39;, &#39;pub_rec&#39;, &#39;revol_bal&#39;, &#39;revol_util&#39;, &#39;total_acc&#39;, &#39;initial_list_status&#39;, &#39;tot_coll_amt&#39;, &#39;tot_cur_bal&#39;, &#39;total_rev_hi_lim&#39;, &#39;acc_open_past_24mths&#39;, &#39;avg_cur_bal&#39;, &#39;bc_open_to_buy&#39;, &#39;bc_util&#39;, &#39;mo_sin_old_il_acct&#39;, &#39;mo_sin_old_rev_tl_op&#39;, &#39;mo_sin_rcnt_rev_tl_op&#39;, &#39;mo_sin_rcnt_tl&#39;, &#39;mort_acc&#39;, &#39;mths_since_recent_bc&#39;, &#39;mths_since_recent_inq&#39;, &#39;num_accts_ever_120_pd&#39;, &#39;num_actv_bc_tl&#39;, &#39;num_actv_rev_tl&#39;, &#39;num_bc_sats&#39;, &#39;num_bc_tl&#39;, &#39;num_il_tl&#39;, &#39;num_op_rev_tl&#39;, &#39;num_rev_accts&#39;, &#39;num_rev_tl_bal_gt_0&#39;, &#39;num_sats&#39;, &#39;num_tl_120dpd_2m&#39;, &#39;num_tl_30dpd&#39;, &#39;num_tl_90g_dpd_24m&#39;, &#39;num_tl_op_past_12m&#39;, &#39;pct_tl_nvr_dlq&#39;, &#39;percent_bc_gt_75&#39;, &#39;pub_rec_bankruptcies&#39;, &#39;tot_hi_cred_lim&#39;, &#39;total_bal_ex_mort&#39;, &#39;total_bc_limit&#39;, &#39;total_il_high_credit_limit&#39;, &#39;default&#39;, &#39;fico_mean&#39;, &#39;earliest_cr_line_year&#39;, &#39;earliest_cr_line_month&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Como se busca predecir si un préstamo emitido resultará en default (1) o será pagado completamente (0), se necesita la información relevante con el prestatario, por lo que aquello que no aporta tambien sera eliminado. Asi como columnas redundantess y tecnicas irrelavantes.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">irrelevant_cols</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;issue_d&quot;</span><span class="p">,</span>            <span class="c1"># fecha de emisión (introduce sesgo temporal)</span>
+    <span class="s2">&quot;initial_list_status&quot;</span> <span class="c1"># estado inicial de la publicación (plataforma, no prestatario)</span>
+<span class="p">]</span>
+<span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">irrelevant_cols</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># === 3. Eliminar numéricas redundantes ===</span>
+<span class="n">redundant_cols</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;installment&quot;</span><span class="p">,</span>        <span class="c1"># muy correlacionada con loan_amnt e int_rate</span>
+    <span class="s2">&quot;avg_cur_bal&quot;</span><span class="p">,</span>        <span class="c1"># duplicada con tot_cur_bal</span>
+    <span class="s2">&quot;total_bal_ex_mort&quot;</span><span class="p">,</span>  <span class="c1"># redundante con tot_cur_bal</span>
+    <span class="s2">&quot;total_bc_limit&quot;</span><span class="p">,</span>     <span class="c1"># redundante con total_rev_hi_lim</span>
+    <span class="s2">&quot;total_il_high_credit_limit&quot;</span><span class="p">,</span> <span class="c1"># redundante con tot_hi_cred_lim</span>
+    <span class="s2">&quot;bc_open_to_buy&quot;</span>      <span class="c1"># redundante con bc_util</span>
+<span class="p">]</span>
+<span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">redundant_cols</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># lista de columnas técnicas a eliminar</span>
+<span class="n">cols_drop</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;tot_coll_amt&quot;</span><span class="p">,</span> <span class="s2">&quot;tot_cur_bal&quot;</span><span class="p">,</span> <span class="s2">&quot;total_rev_hi_lim&quot;</span><span class="p">,</span> <span class="s2">&quot;tot_hi_cred_lim&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;total_bal_ex_mort&quot;</span><span class="p">,</span> <span class="s2">&quot;total_bc_limit&quot;</span><span class="p">,</span> <span class="s2">&quot;total_il_high_credit_limit&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;bc_open_to_buy&quot;</span><span class="p">,</span> <span class="s2">&quot;bc_util&quot;</span><span class="p">,</span> <span class="s2">&quot;percent_bc_gt_75&quot;</span><span class="p">,</span> <span class="s2">&quot;pct_tl_nvr_dlq&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mo_sin_old_il_acct&quot;</span><span class="p">,</span> <span class="s2">&quot;mo_sin_old_rev_tl_op&quot;</span><span class="p">,</span> <span class="s2">&quot;mo_sin_rcnt_rev_tl_op&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mo_sin_rcnt_tl&quot;</span><span class="p">,</span> <span class="s2">&quot;mths_since_recent_bc&quot;</span><span class="p">,</span> <span class="s2">&quot;mths_since_recent_inq&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;acc_open_past_24mths&quot;</span><span class="p">,</span> <span class="s2">&quot;avg_cur_bal&quot;</span><span class="p">,</span> <span class="s2">&quot;num_accts_ever_120_pd&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;num_actv_bc_tl&quot;</span><span class="p">,</span> <span class="s2">&quot;num_actv_rev_tl&quot;</span><span class="p">,</span> <span class="s2">&quot;num_bc_sats&quot;</span><span class="p">,</span> <span class="s2">&quot;num_bc_tl&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;num_il_tl&quot;</span><span class="p">,</span> <span class="s2">&quot;num_op_rev_tl&quot;</span><span class="p">,</span> <span class="s2">&quot;num_rev_accts&quot;</span><span class="p">,</span> <span class="s2">&quot;num_rev_tl_bal_gt_0&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;num_sats&quot;</span><span class="p">,</span> <span class="s2">&quot;num_tl_120dpd_2m&quot;</span><span class="p">,</span> <span class="s2">&quot;num_tl_30dpd&quot;</span><span class="p">,</span> <span class="s2">&quot;num_tl_90g_dpd_24m&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;num_tl_op_past_12m&quot;</span><span class="p">,</span> <span class="s1">&#39;clean_emp_length&#39;</span><span class="p">,</span> <span class="s1">&#39;emp_length&#39;</span>
+<span class="p">]</span>
+
+<span class="c1"># eliminar columnas</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">cols_drop</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✅ Dataset reducido:&quot;</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;📌 Columnas finales:&quot;</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>✅ Dataset reducido: (1345350, 23)
+📌 Columnas finales: [&#39;loan_amnt&#39;, &#39;term&#39;, &#39;int_rate&#39;, &#39;sub_grade&#39;, &#39;home_ownership&#39;, &#39;annual_inc&#39;, &#39;verification_status&#39;, &#39;purpose&#39;, &#39;addr_state&#39;, &#39;dti&#39;, &#39;delinq_2yrs&#39;, &#39;inq_last_6mths&#39;, &#39;open_acc&#39;, &#39;pub_rec&#39;, &#39;revol_bal&#39;, &#39;revol_util&#39;, &#39;total_acc&#39;, &#39;mort_acc&#39;, &#39;pub_rec_bankruptcies&#39;, &#39;default&#39;, &#39;fico_mean&#39;, &#39;earliest_cr_line_year&#39;, &#39;earliest_cr_line_month&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Al final, terminamos con un total de 24 variables y 1345350 registros. Por lo que se procede a realizar el análisis exploratorio de datos.</p>
+</section>
+</section>
+<section id="analisis-exploratorio-de-datos">
+<h2><strong>Analisis Exploratorio de Datos</strong><a class="headerlink" href="#analisis-exploratorio-de-datos" title="Link to this heading">#</a></h2>
+<section id="distribucion-de-la-variable-default">
+<h3><strong>Distribución de la Variable Default</strong><a class="headerlink" href="#distribucion-de-la-variable-default" title="Link to this heading">#</a></h3>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/7a7b391128f2e888fbb63813ae3f63ba6b150d3b17de5a350865fe0657411c9d.png" src="_images/7a7b391128f2e888fbb63813ae3f63ba6b150d3b17de5a350865fe0657411c9d.png" />
+</div>
+</div>
+<p>Este gráfico revela un desbalance de clases, ya que la mayoría de los casos corresponde a clientes que no cayeron en default. Este desbalance puede afectar el desempeño de modelos de clasificación, ya que podrían inclinarse a predecir mayormente la clase mayoritaria.</p>
+</section>
+<section id="valores-faltantes-y-tipos-de-datos">
+<h3><strong>Valores Faltantes y Tipos de Datos</strong><a class="headerlink" href="#valores-faltantes-y-tipos-de-datos" title="Link to this heading">#</a></h3>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Valores faltantes por columna:
+</pre></div>
+</div>
+<img alt="_images/b0cc18dc34da5d7be644580cfc91ea3a2f589724f4eec6d9b52a873bb420ceb1.png" src="_images/b0cc18dc34da5d7be644580cfc91ea3a2f589724f4eec6d9b52a873bb420ceb1.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Tipos de datos:
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>loan_amnt                 float64
+term                       object
+int_rate                  float64
+sub_grade                  object
+home_ownership             object
+annual_inc                float64
+verification_status        object
+purpose                    object
+addr_state                 object
+dti                       float64
+delinq_2yrs               float64
+inq_last_6mths            float64
+open_acc                  float64
+pub_rec                   float64
+revol_bal                 float64
+revol_util                float64
+total_acc                 float64
+mort_acc                  float64
+pub_rec_bankruptcies      float64
+default                   float64
+fico_mean                 float64
+earliest_cr_line_year       int32
+earliest_cr_line_month      int32
+dtype: object
+</pre></div>
+</div>
+</div>
+</div>
+<p>En general, el conjunto de datos está bien completo, ya que la mayoría de las variables no presentan valores nulos. Sin embargo, se observan algunos valores faltantes concentrados en tres columnas: mort_acc, pub_rec_bankruptcies y revol_util. Estas columnas tienen pocos casos nulos en comparación con el tamaño total del dataset, lo que sugiere que podrían ser imputados fácilmente (por ejemplo, con la media, mediana o un modelo de predicción), o eliminados sin afectar significativamente el análisis.</p>
+</section>
+<section id="histogramas-variables-numericas">
+<h3><strong>Histogramas Variables Númericas</strong><a class="headerlink" href="#histogramas-variables-numericas" title="Link to this heading">#</a></h3>
+<p>Para el analisis de las variables numericas se muestran un histograma para visualizar su distribución y</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/88d868d4b99c09aee3c89c3146efea2e0efdf2516cf4b53d1b95c2daf88c2463.png" src="_images/88d868d4b99c09aee3c89c3146efea2e0efdf2516cf4b53d1b95c2daf88c2463.png" />
+</div>
+</div>
+<p>El análisis muestra que la mayoría de los préstamos otorgados se concentran entre los 5,000 y 20,000 dólares, con picos específicos que sugieren montos estandarizados por la entidad financiera. Al comparar con la variable Default, se observa que los clientes que incumplen tienden a tener montos de préstamo ligeramente más altos que los que no incumplen, aunque la diferencia no es muy marcada. Esto indica que el monto del préstamo podría influir en el riesgo de incumplimiento, pero no parece ser un factor determinante por sí solo.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/0fd2f2be7cb8ed1a29ccd9e0dab4ae306eadd62618bc5534f3d650e400f46e91.png" src="_images/0fd2f2be7cb8ed1a29ccd9e0dab4ae306eadd62618bc5534f3d650e400f46e91.png" />
+</div>
+</div>
+<p>La distribución de las tasas de interés está concentrada entre el 8% y el 16%, disminuyendo progresivamente en valores más altos. El boxplot revela que los préstamos en Default suelen tener tasas de interés más elevadas en comparación con los que no incumplen, lo que respalda la relación entre riesgo percibido y costo del crédito: a mayor tasa, mayor probabilidad de incumplimiento. En este caso, la tasa de interés se presenta como un indicador clave para predecir el default.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/d4ccac48038cf07f28958554b7c7acc21fcc234567f38de20d79420fcd1fb580.png" src="_images/d4ccac48038cf07f28958554b7c7acc21fcc234567f38de20d79420fcd1fb580.png" />
+</div>
+</div>
+<p>El histograma de la variable dti (debt-to-income ratio) muestra que la gran mayoría de los clientes tienen un valor relativamente bajo, concentrado entre 0 y 40, aunque existen valores extremos que llegan a superar los 1000, lo cual resulta poco común y probablemente corresponda a outliers o datos atípicos. El boxplot refleja esta misma situación: la distribución central es bastante compacta, pero hay una gran cantidad de valores atípicos en ambos grupos de Default.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/f57a457e838dd8f2e1a1cb23d4d354b8207228768dc00a93f9a08c16ae5dd522.png" src="_images/f57a457e838dd8f2e1a1cb23d4d354b8207228768dc00a93f9a08c16ae5dd522.png" />
+</div>
+</div>
+<p>El histograma de open_acc muestra que la mayoría de los clientes tienen entre 5 y 20 cuentas abiertas, con un claro sesgo a la derecha y algunos casos extremos que superan incluso las 60 cuentas. Esto indica que aunque la mayor parte de las personas mantiene un número moderado de cuentas de crédito abiertas, existe una minoría con una cantidad inusualmente alta. En el boxplot, se aprecia que tanto los clientes que incumplen (Default = 1) como los que no incumplen (Default = 0) tienen distribuciones bastante parecidas, con medianas cercanas y un rango intercuartílico similar.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/251196f82a64d91e0359e9e6758f80207acb87cad766d9d1a0ac1d0cf04edd74.png" src="_images/251196f82a64d91e0359e9e6758f80207acb87cad766d9d1a0ac1d0cf04edd74.png" />
+</div>
+</div>
+<p>En la variable mort_acc, el histograma evidencia que la mayoría de los clientes tienen entre 0 y 2 cuentas hipotecarias, y que muy pocos superan este rango, mostrando también un sesgo hacia la derecha con valores atípicos que llegan hasta más de 40. El boxplot refleja que los clientes en Default suelen tener una mediana más baja de cuentas hipotecarias en comparación con los que no incumplen, lo que puede indicar que los clientes con más cuentas hipotecarias suelen ser más solventes o tienen más respaldo financiero.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/2c18c8efc6270093716c6d85c954a0c5d6ee6e388155ad467c96bcd85cbf7aef.png" src="_images/2c18c8efc6270093716c6d85c954a0c5d6ee6e388155ad467c96bcd85cbf7aef.png" />
+</div>
+</div>
+<p>En el caso de fico_mean, el histograma muestra una distribución más simétrica, concentrada entre 660 y 720 puntos, aunque con valores que llegan hasta los 850. Esto refleja que la mayoría de los clientes tienen un puntaje crediticio dentro del rango considerado aceptable a bueno. El boxplot revela una diferencia más marcada entre los dos grupos: los clientes que incumplen presentan una mediana más baja en comparación con los que no incumplen. Además, aunque ambos grupos tienen outliers con puntajes altos, la tendencia general indica que un menor fico_mean está asociado con mayor probabilidad de caer en Default.</p>
+</section>
+<section id="variables-categoricas">
+<h3><strong>Variables Categoricas</strong><a class="headerlink" href="#variables-categoricas" title="Link to this heading">#</a></h3>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/8e191caaad94330932cce02df874ff9a37026782584ce4437e889b9a406b16a1.png" src="_images/8e191caaad94330932cce02df874ff9a37026782584ce4437e889b9a406b16a1.png" />
+</div>
+</div>
+<p>La distribución de la variable term muestra que la mayoría de los préstamos tienen un plazo de 36 meses (75.9%), mientras que solo una cuarta parte corresponde a 60 meses (24.1%). Esto refleja una preferencia clara por préstamos de corto plazo, lo cual es consistente con un menor riesgo de incumplimiento, ya que los plazos más cortos suelen implicar un menor nivel de exposición y, en general, menor probabilidad de Default. Sin embargo, la existencia de un porcentaje significativo de préstamos a 60 meses indica que una parte importante de los clientes está dispuesta a asumir un compromiso financiero más prolongado.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/e725f2644d1f462f3a7476f90148523a7c393a5edbd94adad547bdb3dc2f6d77.png" src="_images/e725f2644d1f462f3a7476f90148523a7c393a5edbd94adad547bdb3dc2f6d77.png" />
+</div>
+</div>
+<p>En la variable home_ownership, se observa que la mayoría de los clientes se concentran en tres categorías principales: MORTGAGE (hipoteca), RENT (arriendo) y OWN (propiedad), siendo las dos primeras las más frecuentes. Esto sugiere que la base de clientes incluye tanto personas con vivienda propia hipotecada como arrendatarios en proporciones muy similares. Los casos de ANY, OTHER y NONE son minoritarios, lo que indica situaciones menos comunes de tenencia de vivienda.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/0c0646a0c1ddf4a00793b01e3d38811c62ddaf8848f8e0405bde4e35b03014c8.png" src="_images/0c0646a0c1ddf4a00793b01e3d38811c62ddaf8848f8e0405bde4e35b03014c8.png" />
+</div>
+</div>
+<p>La variable verification_status muestra que la mayoría de los clientes tienen algún grado de verificación de sus ingresos: Source Verified (38.7%) y Verified (31.1%), mientras que un 30.2% no tiene verificación (Not Verified). El hecho de que casi el 70% de los casos cuente con verificación sugiere que la entidad crediticia otorga importancia a este proceso para reducir el riesgo de fraude o de información falsa.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;Figure size 800x600 with 0 Axes&gt;
+</pre></div>
+</div>
+<img alt="_images/7f76464d957663e76d0fa945c90400133e26dc5b4fff060b3d599c1acb740263.png" src="_images/7f76464d957663e76d0fa945c90400133e26dc5b4fff060b3d599c1acb740263.png" />
+<img alt="_images/9bdd4b175e2c2f9b1f420e60d74b91154fcf907d165709519867a49ef7850ca1.png" src="_images/9bdd4b175e2c2f9b1f420e60d74b91154fcf907d165709519867a49ef7850ca1.png" />
+</div>
+</div>
+<p>En el primer gráfico se observa que la mayoría de los préstamos concedidos a clientes que no cayeron en Default se concentran principalmente en la categoría debt_consolidation (consolidación de deudas), que supera con creces a todas las demás con más de 600,000 registros. En segundo lugar se encuentra credit_card, que también representa un volumen significativo de clientes con cerca de 250,000 casos. Las siguientes categorías como home_improvement, other y major_purchase tienen una participación mucho menor en comparación, y las categorías car, medical, small_business, vacation y moving son aún menos frecuentes. Esto indica que los préstamos relacionados con el manejo de deudas y tarjetas de crédito son los más comunes entre los clientes cumplidos.</p>
+<p>En el segundo gráfico, que muestra los clientes que sí cayeron en Default, la distribución se mantiene con un patrón muy similar al de los cumplidos: debt_consolidation sigue siendo la categoría dominante, seguida de credit_card. Sin embargo, proporcionalmente, las categorías de other y home_improvement adquieren mayor peso dentro del grupo en incumplimiento, lo que sugiere que estos propósitos pueden conllevar un mayor riesgo relativo de no pago. Al igual que en los clientes sin Default, las categorías de menor frecuencia siguen siendo vacation, car y moving, lo que indica que no representan un volumen significativo de incumplimientos, aunque podrían ser riesgosas en casos particulares por el tipo de gasto que implican.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/a35c4e6897e61f8e1d0d78f3d9072c75ebd2ff9992cf36ad5a5359c81d002a52.png" src="_images/a35c4e6897e61f8e1d0d78f3d9072c75ebd2ff9992cf36ad5a5359c81d002a52.png" />
+</div>
+</div>
+<p>El mapa de calor por estados muestra que la mayor concentración de préstamos se da en California, seguido por Texas, Florida y Nueva York. Estos estados destacan no solo por el número de préstamos, sino también porque representan las zonas con mayor densidad de población y actividad económica en Estados Unidos, lo que explica en gran medida la mayor demanda de crédito. En contraste, estados menos poblados como los del medio oeste y noroeste presentan una frecuencia significativamente menor de préstamos. Esta distribución geográfica permite identificar áreas clave para el mercado crediticio, a la vez que sugiere que el riesgo de incumplimiento podría variar según las condiciones económicas y demográficas locales.</p>
+</section>
+<section id="matriz-de-correlacion">
+<h3><strong>Matriz de Correlación</strong><a class="headerlink" href="#matriz-de-correlacion" title="Link to this heading">#</a></h3>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/21fbf4dcfa256a8f408caa3b5579c6e77f9d6411d3fe506cafaf4c5784413b79.png" src="_images/21fbf4dcfa256a8f408caa3b5579c6e77f9d6411d3fe506cafaf4c5784413b79.png" />
+</div>
+</div>
+<p>Se observa que la mayoría de las correlaciones con la variable objetivo default (incumplimiento) son bajas, siendo la más destacada la tasa de interés (int_rate) con una correlación positiva de 0.26, lo que sugiere que a mayor tasa, mayor probabilidad de incumplimiento. También destaca una correlación negativa entre el puntaje FICO (fico_mean) y default (-0.13), indicando que personas con mejor historial crediticio tienden a incumplir menos. Por otro lado, algunas variables están fuertemente correlacionadas entre sí, como total_acc con open_acc (0.70), lo que puede señalar redundancia en los datos.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="intro.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Predicción de Default en Préstamos de Lending Club</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="scikit-learn.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><strong>Modelado con scikit-learn</strong></p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preprocesamiento-de-datos"><strong>Preprocesamiento de Datos</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creacion-variable-default"><strong>Creación Variable ‘Default’</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#eleccion-de-variables"><strong>Elección de variables</strong></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-exploratorio-de-datos"><strong>Analisis Exploratorio de Datos</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#distribucion-de-la-variable-default"><strong>Distribución de la Variable Default</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#valores-faltantes-y-tipos-de-datos"><strong>Valores Faltantes y Tipos de Datos</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#histogramas-variables-numericas"><strong>Histogramas Variables Númericas</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#variables-categoricas"><strong>Variables Categoricas</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#matriz-de-correlacion"><strong>Matriz de Correlación</strong></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Tawny Torres
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
