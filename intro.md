@@ -17,7 +17,7 @@ A partir de variables financieras y demográficas de los prestatarios.
 1. **Preprocesar y explorar los datos** de Lending Club, entendiendo la distribución de variables relevantes, valores nulos y relaciones entre ellas.
 2. **Crear la variable objetivo `default`** a partir de la columna `loan_status`, diferenciando entre préstamos exitosos y en incumplimiento.
 3. **Entrenar y evaluar modelos de clasificación** utilizando un **Multilayer Perceptron (MLP)** bajo el siguiente enfoque:
-   * **PySpark (big data y procesamiento distribuido)**
+   * **Scikit-learn (Python puro)**
 4. **Comparar el desempeño** en la implementación en términos de:
 
    * Exactitud (Accuracy)
@@ -39,7 +39,7 @@ A partir de variables financieras y demográficas de los prestatarios.
 * **Modelado con MLP**:
 
   * Búsqueda de hiperparámetros (capas ocultas, tasa de regularización `alpha`, número de iteraciones).
-  * Entrenamiento y evaluación en ambos entornos (scikit-learn y PySpark).
+  * Entrenamiento y evaluación.
 * **Interpretabilidad con LIME**: explicación de predicciones individuales para comprender el impacto de las variables.
 
 ## Resultados esperados
